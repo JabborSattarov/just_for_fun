@@ -1,0 +1,1 @@
+export const clientRole = ["user", "admin", "manager"]

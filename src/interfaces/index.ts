@@ -1,0 +1,1 @@
+export type {ExceptionParams} from './exception-params.interfaces';
