@@ -4,7 +4,6 @@ import { ConfigModule } from '@nestjs/config';
 import { appConfig } from './config/app/app.config';
 import { ClientSchema } from './schemas/clients.schemas';
 import { MongooseModule } from '@nestjs/mongoose';
-import { models } from 'mongoose';
 import { DatabaseModule } from './config/db/database.module';
 
 @Module({

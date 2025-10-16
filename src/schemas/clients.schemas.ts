@@ -34,27 +34,44 @@ export class Client {
       unique:true,
       required: true
    })
-   user_login:String
+   user_login:string
    
    @Prop({
       type: String,
       required: true
    })
-   user_password: String
+   user_password: string
+
+   @Prop({
+      type: String,
+      required: true
+   })
+   secret_key_access: string
    
+   @Prop({
+      type: String,
+      required: true
+   })
+   secret_key_refresh: string
+
+   @Prop({
+      type: Date
+   })
+   token_given_time: Date
+
    @Prop({
       type: String,
       enum: clientRole,
       default: 'admin'
    })
-   role: String
+   role: string
    
    @Prop({
       type:Boolean,
       default: true,
       required: true
    })
-   status: Boolean
+   status: boolean
 }
 
 

@@ -12,7 +12,7 @@ export class GlobalExeptionFilter implements ExceptionFilter {
 
       if (exception instanceof Exception) {
 
-         const status:  HttpStatus = exception.getStatus();
+         const status:HttpStatus = exception.getStatus();
 
          if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
             return response.status(status).json({
