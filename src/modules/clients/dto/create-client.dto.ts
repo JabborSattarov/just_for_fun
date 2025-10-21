@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString } from "class-validator";
-import { ClientCreateRequest } from "../interfaces/client.interface";
+import { ClientCreateRequest } from "../../../interfaces/client.interface";
 
 
 export class ClientCreateDto implements ClientCreateRequest {

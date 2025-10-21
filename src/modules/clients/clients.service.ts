@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { ClientCreateRequest, ClientCreateResponse } from "./interfaces";
 import { InjectModel } from "@nestjs/mongoose";
+import { ClientCreateRequest, ClientCreateResponse } from "src/interfaces";
 
 
 

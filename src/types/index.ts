@@ -1,1 +1,1 @@
-export * from "./utility.type"
+export * from "./token.type"

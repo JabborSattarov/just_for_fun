@@ -1,12 +1,11 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from "@nestjs/common";
-import { loginRequest, loginResponse } from "./interfaces";
 import { Client } from 'src/schemas/clients.schemas';
 import { Model } from 'mongoose';
 import { UnauthorizedException } from 'src/exceptions/unauthorized.exaption';
 import { GenerateToken } from 'src/utils';
-import { GenerateLoginPassword } from 'src/utils/generate-login';
 import { HashPassword } from 'src/utils/hash-password';
+import { loginRequest, loginResponse } from 'src/interfaces';
 
 @Injectable()
 export class authService {

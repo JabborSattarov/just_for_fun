@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { ClientService } from "./clients.service";
 import { ClientCreateDto } from "./dto";
-import { ClientCreateResponse } from "./interfaces";
+import { ClientCreateResponse } from "src/interfaces";
 
 
 @Controller("client")
