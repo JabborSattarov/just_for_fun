@@ -67,8 +67,6 @@ export class GenerateToken {
       const hashId = new HashingId()
       const hash = hashId.encryptId(foundedUser.id, secretKey);
 
-
-
       return { accessToken, refreshToken, hash }
    }
 }

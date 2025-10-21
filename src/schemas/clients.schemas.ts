@@ -1,11 +1,11 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import mongoose, { Document } from "mongoose";
 import { clientRole } from "src/enums/role.enums";
-
+import { Permissions } from "./permissions.schema";
 @Schema({
    timestamps:true,
 })
-export class Client {
+export class Client extends Document{
    @Prop({
       required: true,
       type: String,
@@ -72,6 +72,14 @@ export class Client {
       required: true
    })
    status: boolean
+
+
+   // Relationships
+   @Prop({
+      type: mongoose.Types.ObjectId,
+      ref: "Permissions",
+   })
+   permissions: Permissions
 }
 
 

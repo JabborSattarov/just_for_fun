@@ -23,7 +23,7 @@ export class authService {
       } else {
          const generateToken = new GenerateToken(this.clientSchema)
          const SECERT_KEY = process.env.AES_SECRET_KEY
-         const { accessToken, hash } = await generateToken.signPayload({ id: findUser._id, role: findUser.role }, SECERT_KEY)
+         const { accessToken, hash } = await generateToken.signPayload({ id: findUser.id, role: findUser.role}, SECERT_KEY, true)
 
          let response: loginResponse = {
             status: 200,
