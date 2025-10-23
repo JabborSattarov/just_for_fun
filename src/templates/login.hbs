@@ -1,0 +1,30 @@
+<!-- templates/login-credentials.hbs -->
+<html>
+
+<body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
+   <div
+      style="max-width: 600px; margin: auto; background-color: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+      <h2 style="color: #333;">Assalomu alaykum, {{name}}!</h2>
+      <p>Siz tizimga muvaffaqiyatli ro‘yxatdan o‘tdingiz. Quyida sizning login ma'lumotlaringiz keltirilgan:</p>
+
+      <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+         <tr>
+            <td style="padding: 10px; background-color: #f0f0f0;"><strong>Login:</strong></td>
+            <td style="padding: 10px;">{{login}}</td>
+         </tr>
+         <tr>
+            <td style="padding: 10px; background-color: #f0f0f0;"><strong>Parol:</strong></td>
+            <td style="padding: 10px;">{{password}}</td>
+         </tr>
+      </table>
+
+      <p style="margin-top: 20px;">Tizimga kirish uchun <a href="{{loginUrl}}" style="color: #007bff;">shu havolani
+            bosing</a>.</p>
+
+      <p>Agar bu xabarni siz yubormagan bo‘lsangiz, iltimos biz bilan bog‘laning.</p>
+
+      <p style="margin-top: 30px; color: #888;">Hurmat bilan,<br>My App jamoasi</p>
+   </div>
+</body>
+
+</html>

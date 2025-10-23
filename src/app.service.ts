@@ -16,6 +16,7 @@ export class AdminSeederService implements OnModuleInit {
 
       const hashPassword = new HashPassword();
       const oneTimeCode = new OneTimeCode();
+      
       const access_token_key = oneTimeCode.generateOneTimeCode(32)
       const refresh_token_key = oneTimeCode.generateOneTimeCode(32)
       const adminSchema = {

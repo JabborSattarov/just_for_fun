@@ -24,8 +24,11 @@ export class GlobalExeptionFilter implements ExceptionFilter {
             details: exception.getDetails(),
          })
       }
+      console.log(exception);
+      
       return response.status(exception?.status ?? HttpStatus.INTERNAL_SERVER_ERROR).json({
          message: exception?.message ?? HttpMessage.INTERNAL_SERVER_ERROR,
+         details: exception?.details
       })
    }
 }

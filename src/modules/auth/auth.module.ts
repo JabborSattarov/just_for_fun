@@ -3,6 +3,7 @@ import { authController } from "./auth.controller";
 import { authService } from "./auth.service";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Client, ClientSchema } from "src/schemas/clients.schemas";
+import { GenerateToken, HashPassword } from "src/utils";
 
 
 @Module({
@@ -11,7 +12,11 @@ import { Client, ClientSchema } from "src/schemas/clients.schemas";
          {name: Client.name, schema: ClientSchema}
       ])
    ],
-   providers:[authService],
+   providers:[
+      authService,
+      GenerateToken,
+      HashPassword
+   ],
    controllers:[authController]
 })
-export class authModule {}
+export class AuthModule {}

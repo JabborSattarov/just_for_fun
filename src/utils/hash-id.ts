@@ -12,8 +12,13 @@ export class HashingId {
    }
 
 
-   decryptId(encriptedId: string, secretKey: string) {
-      const [ivHex, encrypted] = encriptedId.split(':');
+   decryptId(hash: string, secretKey: string) {
+
+      console.log(2);
+      console.log(hash);
+      
+      
+      const [ivHex, encrypted] = hash.split(':');
       const iv = Buffer.from(ivHex, 'hex');
       const hashedKey = createHash('sha256').update(secretKey).digest();
       const decipher = createDecipheriv('aes-256-cbc', hashedKey, iv);

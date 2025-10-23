@@ -1,10 +1,12 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { createCipheriv, randomBytes } from "crypto"
+import { createCipheriv, createDecipheriv, randomBytes } from "crypto"
 import mongoose, { Model } from 'mongoose';
 import { NotFoundException } from 'src/exceptions/not-found.exception';
 import { Client } from 'src/schemas/clients.schemas';
-import { tokenPayloadType } from "src/types"
+import { tokenSignPayloadType, tokenVerifyPayloadType } from "src/types"
 import { HashingId } from './hash-id';
+import { UnauthorizedException } from 'src/exceptions/unauthorized.exaption';
+
 
 
 export class GenerateToken {
@@ -19,7 +21,7 @@ export class GenerateToken {
          .replace(/=+$/, "")
    }
 
-   private async createToken(payload: tokenPayloadType, secretKey: string) {
+   private createToken(payload: tokenSignPayloadType, secretKey: string) {
       const aesKey = Buffer.from(secretKey, "base64")
       
       const iv = randomBytes(12);
@@ -39,7 +41,7 @@ export class GenerateToken {
       return this.base64urlEncode(cipherData);
    }
 
-   async signPayload (payload: tokenPayloadType, secretKey: string, refresh: boolean = false) {
+   async signPayload (payload: tokenSignPayloadType, secretKey: string, refresh: boolean = false) {
       
       const { id } = payload;
       const currentDate = new Date();
@@ -54,11 +56,11 @@ export class GenerateToken {
          throw new NotFoundException("", "User not found")
       }
       payload.expiryTime = accessTokenTime
-      const accessToken = await this.createToken(payload, foundedUser.secret_key_access);
-      let refreshToken = null;
+      const access_token = this.createToken(payload, foundedUser.secret_key_access);
+      let refresh_token = null;
       if (refresh) {
          payload.expiryTime = refreshTokenTime;
-         refreshToken = await this.createToken(payload, foundedUser.secret_key_refresh)
+         refresh_token =  this.createToken(payload, foundedUser.secret_key_refresh)
       }
 
       foundedUser.token_given_time = currentDate
@@ -67,6 +69,36 @@ export class GenerateToken {
       const hashId = new HashingId()
       const hash = hashId.encryptId(foundedUser.id, secretKey);
 
-      return { accessToken, refreshToken, hash }
+      return { access_token, refresh_token, hash }
+   }
+
+   verifyToken (token: tokenVerifyPayloadType, secretKey: string) {    
+      try {
+         const base64 = token
+            .replace(/-/g, '+')
+            .replace(/_/g, '/')
+            + '='.repeat((4 - token.length % 4) % 4);
+         const decoded = Buffer.from(base64, 'base64');
+
+         const iv = decoded.subarray(0, 12);
+
+         const authTag = decoded.subarray(decoded.length - 16);
+
+         const encrypted = decoded.subarray(12, decoded.length - 16);
+
+         const aesKey = Buffer.from(secretKey, 'base64');
+         const decipher = createDecipheriv('aes-256-gcm', aesKey, iv);
+
+         decipher.setAuthTag(authTag);
+
+         const decrypted = decipher.update(encrypted, undefined, 'utf8') + decipher.final('utf8');
+
+         const payload: tokenSignPayloadType = JSON.parse(decrypted);
+
+         return payload;
+      } catch (error) {
+         throw new UnauthorizedException(error.message, "invalid token !")
+      }
+     
    }
 }

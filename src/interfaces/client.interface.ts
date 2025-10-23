@@ -12,3 +12,12 @@ export interface ClientCreateResponse {
    access_token:string,
    hash:string
 }
+
+
+export interface CreateClientInterface extends ClientCreateRequest {
+   user_login: string,
+   user_password: string, 
+   secret_key_access: string,
+   secret_key_refresh: string,
+   token_given_time? : Date
+}

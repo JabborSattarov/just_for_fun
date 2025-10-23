@@ -1,5 +1,6 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsString } from "class-validator";
 import { ClientCreateRequest } from "../../../interfaces/client.interface";
+import { clientRole } from "src/enums/role.enums";
 
 
 export class ClientCreateDto implements ClientCreateRequest {
@@ -21,5 +22,6 @@ export class ClientCreateDto implements ClientCreateRequest {
 
    @IsString()
    @IsNotEmpty()
+   @IsEnum(clientRole)
    role: string;
 }

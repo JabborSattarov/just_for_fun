@@ -69,7 +69,6 @@ export class Client extends Document{
    @Prop({
       type:Boolean,
       default: true,
-      required: true
    })
    status: boolean
 
