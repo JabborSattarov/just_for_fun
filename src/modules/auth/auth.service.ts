@@ -26,25 +26,26 @@ export class authService {
       let { user_login, user_password } = body;
 
       const findUser = await this.clientSchema.findOne({ user_login, status: true });
+      if (!findUser) {
+         throw new UnauthorizedException("", "incorrect login !",);
+      }
 
       let verifyedPassword = this.hashPassword.verifyPassword(findUser.user_password, user_password)
 
-      if (!findUser || !verifyedPassword) {
-         throw new UnauthorizedException("", "this user is not exists",);
-      } else {
-
-         console.log();
-         
-         const tokens = await this.generateToken.signPayload({ id: findUser.id, role: findUser.role },  this.SECERT_KEY, true)
-
-         let response: loginResponseInterface = {
-            status: 200,
-            message: "loged in",
-            ...tokens
-
-         }
-         return response
+      if (!verifyedPassword) {
+         throw new UnauthorizedException("", "incorrect password !",);
       }
+
+      const tokens = await this.generateToken.signPayload({ id: findUser.id, role: findUser.role }, this.SECERT_KEY, true)
+
+      let response: loginResponseInterface = {
+         status: 200,
+         message: "loged in",
+         ...tokens
+
+      }
+      return response
+
    }
 
    async sendAuthCode(body: SendAuthCodeRequestInterface): Promise<SendAuthCodeResponseInterface> {
@@ -74,26 +75,26 @@ export class authService {
    }
 
 
-   async checkAuthCode (body: CheckAuthCodeRequestInterface): Promise<CheckAuthCodeResponseInterface> {
-      
-      const {email , code} = body;
+   async checkAuthCode(body: CheckAuthCodeRequestInterface): Promise<CheckAuthCodeResponseInterface> {
 
-      const findUser = await this.clientSchema.findOne({user_email: email, status: true , code});
+      const { email, code } = body;
+
+      const findUser = await this.clientSchema.findOne({ user_email: email, status: true, code });
       if (!findUser) {
          throw new UnauthorizedException("", "Unauthorized !")
       }
-      const {login , password} = await this.generateLoginPassword.generateLoginPassword(10, 10);
+      const { login, password } = await this.generateLoginPassword.generateLoginPassword(10, 10);
       findUser.user_login = login,
-      findUser.user_password = this.hashPassword.hashPassword(password)
+         findUser.user_password = this.hashPassword.hashPassword(password)
       findUser.code = null,
-      await findUser.save()
+         await findUser.save()
 
-      await this.sendMail.sendLoginMail({email, user_firstname: findUser.user_firstname, user_lastname: findUser.user_lastname,login, password, message: "this is your login password take care it !" })
+      await this.sendMail.sendLoginMail({ email, user_firstname: findUser.user_firstname, user_lastname: findUser.user_lastname, login, password, message: "this is your login password take care it !" })
 
       const response: CheckAuthCodeResponseInterface = {
          message: "Your login passowrd sended to your email",
       }
       return response
-   }  
+   }
 }
 

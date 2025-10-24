@@ -51,7 +51,6 @@ export class CheckTokenGuard implements CanActivate {
       await findUser.save()
 
       request.decode = verifyedTokenData
-
       return true
    }
 }

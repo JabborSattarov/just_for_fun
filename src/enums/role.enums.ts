@@ -1,1 +1,5 @@
-export const clientRole = ["user", "admin", "manager"]
+export enum clientRole {
+   USER = "user",
+   ADMIN = "admin",
+   MANAGER = "manager"
+} 
