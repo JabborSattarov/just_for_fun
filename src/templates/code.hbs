@@ -1,0 +1,24 @@
+<!-- templates/login-credentials.hbs -->
+<html>
+
+<body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
+   <div
+      style="max-width: 600px; margin: auto; background-color: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+      <h2 style="color: #333;">Assalomu alaykum, {{name}}!</h2>
+      <p>Siz tizimga kirishingiz uchun bir martalik code. Code ni hechkimga bermang !</p>
+
+      <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+         <tr>
+            <td style="padding: 10px; background-color: #f0f0f0;"><strong>Code:</strong></td>
+            <td style="padding: 10px;">{{code}}</td>
+         </tr>
+      </table>
+
+      <p>Agar bu xabarni siz yubormagan bo‘lsangiz, iltimos biz bilan bog‘laning.<a href="{{supportUrl}}" style="color: #007bff;">shu havolani
+         bosing</a></p>
+
+      <p style="margin-top: 30px; color: #888;">Hurmat bilan,<br>MYAPP jamoasi</p>
+   </div>
+</body>
+
+</html>

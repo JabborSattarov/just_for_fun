@@ -68,8 +68,7 @@ export class GenerateToken {
 
       const hashId = new HashingId()
       const hash = hashId.encryptId(foundedUser.id, secretKey);
-
-      return { access_token, refresh_token, hash }
+      return refresh ? { access_token, refresh_token, hash } : {access_token, hash}
    }
 
    verifyToken (token: tokenVerifyPayloadType, secretKey: string) {    

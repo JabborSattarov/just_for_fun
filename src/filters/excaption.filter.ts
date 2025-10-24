@@ -10,6 +10,8 @@ export class GlobalExeptionFilter implements ExceptionFilter {
       const express: HttpArgumentsHost = host.switchToHttp()
       const response: Response = express.getResponse<Response>()
 
+      console.log(exception);
+      
       if (exception instanceof Exception) {
 
          const status:HttpStatus = exception.getStatus();
@@ -20,11 +22,11 @@ export class GlobalExeptionFilter implements ExceptionFilter {
             })
          }
          return response.status(status).json({
+            status,
             message: exception.getMessage(),
             details: exception.getDetails(),
          })
       }
-      console.log(exception);
       
       return response.status(exception?.status ?? HttpStatus.INTERNAL_SERVER_ERROR).json({
          message: exception?.message ?? HttpMessage.INTERNAL_SERVER_ERROR,

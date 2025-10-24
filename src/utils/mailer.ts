@@ -1,6 +1,6 @@
 import { MailerService } from "@nestjs-modules/mailer";
 import { Injectable } from "@nestjs/common";
-import { SendLoginPasswordType } from "src/types";
+import { SendCodeType, SendLoginPasswordType } from "src/types";
 @Injectable()
 export class SendMail {
    readonly #_mailerService: MailerService
@@ -20,5 +20,18 @@ export class SendMail {
             loginUrl: 'http://localhost:9000/auth/login'
          }
       }) 
+   }
+
+   async sendCode (payload:SendCodeType ) {
+      return this.#_mailerService.sendMail({
+         to: payload.email,
+         subject: payload.message,
+         template: "code",
+         context: {
+            name: `${payload.user_firstname} ${payload.user_lastname}`,
+            code: payload.code,
+            supportUrl: 'http://localhost:9000/support'
+         }
+      })
    }
 }

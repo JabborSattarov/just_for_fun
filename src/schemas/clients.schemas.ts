@@ -71,6 +71,10 @@ export class Client extends Document{
       default: true,
    })
    status: boolean
+   @Prop({
+      type:String,
+   })
+   code: string
 
 
    // Relationships

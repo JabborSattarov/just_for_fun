@@ -4,7 +4,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import mongoose, { Model } from "mongoose";
 import { BadRequestException } from "src/exceptions";
 import { UnauthorizedException } from "src/exceptions/unauthorized.exaption";
-import { loginResponse } from "src/interfaces";
+import { loginResponseInterface } from "src/interfaces";
 import { CustomeRequestInterface } from "src/interfaces/token.interface";
 import { Client } from "src/schemas/clients.schemas";
 import { tokenSignPayloadType } from "src/types";
@@ -19,7 +19,7 @@ export class RefershTokenService {
       private readonly oneTimeCode: OneTimeCode
    ) { }
 
-   async refresh(req: CustomeRequestInterface): Promise<loginResponse> {
+   async refresh(req: CustomeRequestInterface): Promise<loginResponseInterface> {
 
       const refresh_token = req.headers["r_token"]
       const hash = req.headers["hash"]
@@ -48,7 +48,7 @@ export class RefershTokenService {
 
       const SECERT_KEY = process.env.AES_SECRET_KEY
       const tokens = await this.generateToken.signPayload({ id: findUser.id, role: findUser.role }, SECERT_KEY, true)
-      const response: loginResponse = {
+      const response: loginResponseInterface = {
          status:200,
          message: "ok",
          ...tokens

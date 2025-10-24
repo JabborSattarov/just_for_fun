@@ -6,3 +6,11 @@ export type SendLoginPasswordType = {
    password: string,
    message: string,
 }
+
+export type SendCodeType= {
+   email: string
+   user_firstname: string,
+   user_lastname: string,
+   code: string,
+   message: string,
+}
