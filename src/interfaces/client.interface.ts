@@ -21,3 +21,6 @@ export interface CreateClientInterface extends ClientCreateRequest {
    secret_key_refresh: string,
    token_given_time? : Date
 }
+export interface ClientDeleteRequestInterface {
+   id: string
+} 

@@ -1,10 +1,10 @@
-import { Body, Controller, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Param, Post, Req, UseGuards, UsePipes } from "@nestjs/common";
 import { ClientService } from "./clients.service";
-import { ClientCreateDto } from "./dto";
-import { ClientCreateResponse } from "src/interfaces";
+import { ClientCreateDto, ClientDeleteDto } from "./dto";
+import { ClientCreateResponse, ClientDeleteRequestInterface, CustomeRequestInterface} from "src/interfaces";
 import { CheckTokenGuard } from "src/guards/check-token.guard";
-import { CustomeRequestInterface } from "src/interfaces/token.interface";
 import { CheckRoleForAdminGuard } from "src/guards/check-role.guard";
+import { ClientCreateValidationPipe } from "src/pipes/client.pipe";
 
 
 @Controller("client")
@@ -15,9 +15,24 @@ export class ClientConroller {
    }
 
 
-   @UseGuards(CheckTokenGuard, CheckRoleForAdminGuard)
+   @UseGuards(
+      CheckTokenGuard, 
+      CheckRoleForAdminGuard
+   )
+   @UsePipes(
+      ClientCreateValidationPipe
+   )
    @Post("create")
-   createClient(@Body() body: ClientCreateDto, req: CustomeRequestInterface): Promise<ClientCreateResponse> {
-      return this.#_service.create(body)
+   createClient(@Body() body: ClientCreateDto, @Req() req: CustomeRequestInterface): Promise<ClientCreateResponse> {
+      return this.#_service.create(body, req)
+   }
+
+   @UseGuards(
+      CheckTokenGuard,
+      CheckRoleForAdminGuard
+   )
+   @Post("delete/:id")
+   deleteClient(@Param() param: ClientDeleteDto, @Req() req: CustomeRequestInterface): Promise<ClientCreateResponse>{
+      return this.#_service.delete(param, req)
    }
 }

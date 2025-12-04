@@ -47,7 +47,7 @@ export class RefershTokenService {
       }
 
       const SECERT_KEY = process.env.AES_SECRET_KEY
-      const tokens = await this.generateToken.signPayload({ id: findUser.id, role: findUser.role }, SECERT_KEY, true)
+      const tokens = await this.generateToken.signPayload({ id: findUser.id, role: findUser.role }, SECERT_KEY, false)
       const response: loginResponseInterface = {
          status:200,
          message: "ok",

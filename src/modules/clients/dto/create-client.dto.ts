@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty, IsString } from "class-validator";
-import { ClientCreateRequest } from "../../../interfaces/client.interface";
+import { ClientCreateRequest, ClientDeleteRequestInterface } from "../../../interfaces/client.interface";
 import { clientRole } from "src/enums/role.enums";
 
 
@@ -24,4 +24,10 @@ export class ClientCreateDto implements ClientCreateRequest {
    @IsNotEmpty()
    @IsEnum(clientRole)
    role: string;
+}
+
+export class ClientDeleteDto implements  ClientDeleteRequestInterface{
+   @IsString()
+   @IsNotEmpty()
+   id: string
 }

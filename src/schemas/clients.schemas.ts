@@ -3,9 +3,9 @@ import mongoose, { Document } from "mongoose";
 import { clientRole } from "src/enums/role.enums";
 import { Permissions } from "./permissions.schema";
 @Schema({
-   timestamps:true,
+   timestamps: true,
 })
-export class Client extends Document{
+export class Client extends Document {
    @Prop({
       required: true,
       type: String,
@@ -13,29 +13,27 @@ export class Client extends Document{
    user_firstname: string;
 
    @Prop({
-      type:String
+      type: String
    })
-   user_lastname:string;
+   user_lastname: string;
 
    @Prop({
-      unique:true,
       type: String
    })
    user_email: string;
 
    @Prop({
       type: String
-      
+
    })
    user_phone: string;
-   
+
    @Prop({
       type: String,
-      unique:true,
       required: true
    })
-   user_login:string
-   
+   user_login: string
+
    @Prop({
       type: String,
       required: true
@@ -47,7 +45,7 @@ export class Client extends Document{
       required: true
    })
    secret_key_access: string
-   
+
    @Prop({
       type: String,
       required: true
@@ -65,14 +63,14 @@ export class Client extends Document{
       default: 'admin'
    })
    role: string
-   
+
    @Prop({
-      type:Boolean,
+      type: Boolean,
       default: true,
    })
    status: boolean
    @Prop({
-      type:String,
+      type: String,
    })
    code: string
 
@@ -87,3 +85,15 @@ export class Client extends Document{
 
 
 export const ClientSchema = SchemaFactory.createForClass(Client);
+
+ClientSchema.index(
+   { user_email: 1 },
+   { unique: true, partialFilterExpression: { status: true } }
+);
+ClientSchema.index(
+   { user_login: 1 },
+   {
+      unique: true,
+      partialFilterExpression: { status: true }
+   }
+);

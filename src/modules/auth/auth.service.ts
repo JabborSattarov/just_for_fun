@@ -52,6 +52,9 @@ export class authService {
       const { email } = body;
 
       const findUser = await this.clientSchema.findOne({ user_email: email, status: true });
+
+      console.log(findUser);
+      
       if (!findUser) {
          throw new UnauthorizedException("", "user is not found !");
       }

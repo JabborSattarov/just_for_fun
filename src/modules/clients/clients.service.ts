@@ -2,9 +2,9 @@ import { HashingId } from './../../utils/hash-id';
 
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
-import { ConflictException } from "src/exceptions";
-import { ClientCreateRequest, ClientCreateResponse, CreateClientInterface, CreatePermissionInterface } from "src/interfaces";
+import mongoose, { Model } from "mongoose";
+import { BadRequestException, ConflictException } from "src/exceptions";
+import { ClientCreateRequest, ClientCreateResponse, ClientDeleteRequestInterface, CreateClientInterface, CreatePermissionInterface, CustomeRequestInterface } from "src/interfaces";
 import { Client } from "src/schemas/clients.schemas";
 import { Permissions } from "src/schemas/permissions.schema";
 import { SendLoginPasswordType } from "src/types";
@@ -27,22 +27,22 @@ export class ClientService {
    ) { }
 
 
-   async create(data: ClientCreateRequest): Promise<ClientCreateResponse> {
+   async create(data: ClientCreateRequest, req: CustomeRequestInterface): Promise<ClientCreateResponse> {
       let {
          user_email,
          role
       } = data;
-      
+
       const checkUnique = await this.clientSchema.findOne({ user_email, status: true });
       if (checkUnique) {
          throw new ConflictException("", "user must be unique");
       }
-      
-      const { login, password } = await  this.generateLoginPassword.generateLoginPassword(10, 10);
-      
+
+      const { login, password } = await this.generateLoginPassword.generateLoginPassword(10, 10);
+
       const hashedPassword = this.hashPassword.hashPassword(password)
 
-      
+
 
       const newClientData: CreateClientInterface = {
          ...data,
@@ -50,7 +50,7 @@ export class ClientService {
          user_password: hashedPassword,
          secret_key_access: this.oneTimeCode.generateOneTimeCode(32),
          secret_key_refresh: this.oneTimeCode.generateOneTimeCode(32),
-         
+
       }
 
       const newClient = await this.clientSchema.create(newClientData);
@@ -71,7 +71,7 @@ export class ClientService {
          await this.permissionSchema.create(adminPermissionData);
       }
 
-      
+
 
       const loginData: SendLoginPasswordType = {
          user_firstname: newClient.user_firstname,
@@ -80,19 +80,39 @@ export class ClientService {
          message: "Your login and password information !",
          login: newClient.user_login,
          password: password,
-         
+
       }
 
-      console.log("data",loginData)
+      console.log("data", loginData)
       await this.sendMail.sendLoginMail(loginData)
 
 
       const SECERT_KEY = process.env.AES_SECRET_KEY
-      const tokens = await this.generateToken.signPayload({ id: newClient.id, role: newClient.role }, SECERT_KEY)
-   
+      const tokens = await this.generateToken.signPayload({ id: req.decode.id, role: req.decode.role }, SECERT_KEY)
+
       return {
          status: 200,
          message: "Login and password sended to your email.",
+         ...tokens
+      }
+   }
+
+   async delete(param: ClientDeleteRequestInterface, req: CustomeRequestInterface): Promise<ClientCreateResponse> {
+      if (!param.id ) {
+         throw new BadRequestException("", "id is required !");
+      }
+      if (!mongoose.isValidObjectId(param.id)) {
+         throw new BadRequestException("", "id must be objectId !");
+      }
+
+      await this.clientSchema.updateOne({_id: new mongoose.Types.ObjectId(param.id), status: true}, {status: false});
+
+      const SECERT_KEY = process.env.AES_SECRET_KEY
+      const tokens = await this.generateToken.signPayload({ id: req.decode.id, role: req.decode.role }, SECERT_KEY)
+
+      return {
+         status: 200,
+         message: "User successfully deleted !",
          ...tokens
       }
    }
