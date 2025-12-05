@@ -4,6 +4,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import mongoose, { Model } from "mongoose";
 import { BadRequestException, ConflictException } from "src/exceptions";
+import { NotFoundException } from 'src/exceptions/not-found.exception';
 import { ClientCreateRequest, ClientCreateResponse, ClientDeleteRequestInterface, CreateClientInterface, CreatePermissionInterface, CustomeRequestInterface } from "src/interfaces";
 import { Client } from "src/schemas/clients.schemas";
 import { Permissions } from "src/schemas/permissions.schema";
@@ -98,14 +99,14 @@ export class ClientService {
    }
 
    async delete(param: ClientDeleteRequestInterface, req: CustomeRequestInterface): Promise<ClientCreateResponse> {
-      if (!param.id ) {
+      if (!param.id) {
          throw new BadRequestException("", "id is required !");
       }
       if (!mongoose.isValidObjectId(param.id)) {
          throw new BadRequestException("", "id must be objectId !");
       }
 
-      await this.clientSchema.updateOne({_id: new mongoose.Types.ObjectId(param.id), status: true}, {status: false});
+      await this.clientSchema.updateOne({ _id: new mongoose.Types.ObjectId(param.id), status: true }, { status: false });
 
       const SECERT_KEY = process.env.AES_SECRET_KEY
       const tokens = await this.generateToken.signPayload({ id: req.decode.id, role: req.decode.role }, SECERT_KEY)
@@ -113,6 +114,40 @@ export class ClientService {
       return {
          status: 200,
          message: "User successfully deleted !",
+         ...tokens
+      }
+   }
+
+   async getOne(param: ClientDeleteRequestInterface, req: CustomeRequestInterface): Promise<ClientCreateResponse> {
+      console.log(param);
+
+      if (!param && !param.id) {
+         throw new BadRequestException("", "id is required !");
+      }
+      if (!mongoose.isValidObjectId(param.id)) {
+         throw new BadRequestException("", "id must be objectId !");
+      }
+
+      const founded = await this.clientSchema.findOne({ _id: param.id, status: true }).lean();
+      console.log("founded",founded);
+      
+      let foundedClient: object = {};
+      for (const key in founded) {         
+         if (["_id" ,"user_firstname" ,"user_lastname", "user_email", "user_phone"].includes(key)) {
+            foundedClient[key] = founded[key];
+         }
+
+      }
+      if (!founded) {
+         throw new NotFoundException("", "user is not found")
+      }
+
+      const SECERT_KEY = process.env.AES_SECRET_KEY
+      const tokens = await this.generateToken.signPayload({ id: req.decode.id, role: req.decode.role }, SECERT_KEY)
+      return {
+         status: 200,
+         message: "OK",
+         data: foundedClient,
          ...tokens
       }
    }

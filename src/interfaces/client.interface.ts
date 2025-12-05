@@ -10,6 +10,7 @@ export interface ClientCreateResponse {
    status:number,
    message:string,
    access_token:string,
+   data?: unknown
    hash:string
 }
 
