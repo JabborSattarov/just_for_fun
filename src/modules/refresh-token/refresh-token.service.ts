@@ -41,7 +41,6 @@ export class RefershTokenService {
       const verifyedTokenData: tokenSignPayloadType = this.generateToken.verifyToken(refresh_token, findUser.secret_key_refresh)
       const currentTime = new Date();
 
-      console.log(verifyedTokenData)
       if (currentTime >= new Date(verifyedTokenData.expiryTime)) {
          throw new UnauthorizedException("", "token expired !");
       }

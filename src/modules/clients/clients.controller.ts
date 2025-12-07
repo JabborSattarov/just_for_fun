@@ -3,8 +3,9 @@ import { ClientService } from "./clients.service";
 import { ClientCreateDto, ClientDeleteDto } from "./dto";
 import { ClientCreateResponse, ClientDeleteRequestInterface, CustomeRequestInterface} from "src/interfaces";
 import { CheckTokenGuard } from "src/guards/check-token.guard";
-import { CheckRoleForAdminGuard } from "src/guards/check-role.guard";
+import { CheckRoleGuard } from "src/guards/check-role.guard";
 import { ClientCreateValidationPipe } from "src/pipes/client.pipe";
+import { Roles } from "src/decorators";
 
 
 @Controller("client")
@@ -17,8 +18,9 @@ export class ClientConroller {
 
    @UseGuards(
       CheckTokenGuard, 
-      CheckRoleForAdminGuard
+      CheckRoleGuard
    )
+   @Roles("admin", "manager")
    @UsePipes(
       ClientCreateValidationPipe
    )
@@ -27,10 +29,12 @@ export class ClientConroller {
       return this.#_service.create(body, req)
    }
 
+
    @UseGuards(
       CheckTokenGuard,
-      CheckRoleForAdminGuard
+      CheckRoleGuard
    )
+   @Roles("admin", "manager")
    @Post("delete/:id")
    deleteClient(@Param() param: ClientDeleteDto, @Req() req: CustomeRequestInterface): Promise<ClientCreateResponse>{
       return this.#_service.delete(param, req)
@@ -38,9 +42,20 @@ export class ClientConroller {
 
    @UseGuards(
       CheckTokenGuard,
-      CheckRoleForAdminGuard
+      CheckRoleGuard
    )
-   @Get(":id")
+   @Roles("admin", "manager")
+   @Get("get/all")
+   getAllClient(@Req() req: CustomeRequestInterface): Promise<ClientCreateResponse> {
+      return this.#_service.getAll(req)
+   }
+
+   @UseGuards(
+      CheckTokenGuard,
+      CheckRoleGuard
+   )
+   @Roles("admin", "manager")
+   @Get("get/:id")
    getOneClient(@Param() param: ClientDeleteDto, @Req() req: CustomeRequestInterface) : Promise<ClientCreateResponse>{
       return this.#_service.getOne(param, req)
    }

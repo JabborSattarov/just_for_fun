@@ -1,27 +1,31 @@
-import { BadRequestException, CanActivate, ExecutionContext, ForbiddenException, UnauthorizedException } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { CanActivate, ExecutionContext, Injectable, } from "@nestjs/common";
+import { ForbiddenException } from "src/exceptions/forbidden.exception";
 import { CustomeRequestInterface } from "src/interfaces/token.interface";
-import { Client } from "src/schemas/clients.schemas";
-import { GenerateToken, HashingId, OneTimeCode } from "src/utils";
+import { Reflector } from '@nestjs/core';
 
+@Injectable()
+export class CheckRoleGuard implements CanActivate {
 
-export class CheckRoleForAdminGuard implements CanActivate {
-      
-      constructor(
-         @InjectModel(Client.name) private readonly clientSchema: Model<Client>,
-         private readonly generateToken: GenerateToken,
-         private readonly oneTimeCode: OneTimeCode,
-      ){}
-   
-     async canActivate(context: ExecutionContext): Promise<boolean> {
-         const request : CustomeRequestInterface = context.switchToHttp().getRequest();   
-         const { role } = request["decode"];
-         
-         if (role !== "admin") {
-            throw new ForbiddenException("", "You dont have access !")
-         }
-         
-         return  true
+   constructor(
+      private readonly reflector: Reflector
+   ) { }
+
+   async canActivate(context: ExecutionContext): Promise<boolean> {
+      const request: CustomeRequestInterface = context.switchToHttp().getRequest();
+      const { role } = request["decode"];
+      const requiredRoles = this.reflector.getAllAndOverride<string[]>(
+         "roles",
+         [context.getHandler(), context.getClass()]
+      )
+
+      if (!requiredRoles) {
+         return true;
       }
+
+      if (!requiredRoles.includes(role)) {
+         throw new ForbiddenException("", "You dont have access !")
+      }
+      return true
+   }
 }
+

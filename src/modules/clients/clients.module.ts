@@ -8,6 +8,7 @@ import { SendMail } from "src/utils/mailer";
 import { GenerateToken, OneTimeCode } from "src/utils";
 import { GenerateLoginPassword } from "src/utils/generate-login";
 import { HashPassword } from "src/utils/hash-password";
+import { CheckRoleGuard } from "src/guards/check-role.guard";
 
 @Module({
    imports: [
@@ -22,7 +23,7 @@ import { HashPassword } from "src/utils/hash-password";
       SendMail,
       HashPassword,
       OneTimeCode,
-      GenerateToken
+      GenerateToken,
    ],
    controllers: [ClientConroller],
    exports: []

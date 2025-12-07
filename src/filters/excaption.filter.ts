@@ -9,7 +9,7 @@ export class GlobalExeptionFilter implements ExceptionFilter {
    catch(exception: any, host: ArgumentsHost) :Response {
       const express: HttpArgumentsHost = host.switchToHttp()
       const response: Response = express.getResponse<Response>()
-      console.log(exception);
+      
       
       if (exception instanceof Exception) {
 

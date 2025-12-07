@@ -6,8 +6,6 @@ import * as path from "path"
 const SMTP_USR = process.env.SMTP_USR ? String(process.env.SMTP_USR) : "sattarovjabboro4@gmail.com"
 const SMTP_PWD = process.env.SMTP_PWD ? String(process.env.SMTP_PWD) : "getbclujgbrfmyvr"
 
-console.log(SMTP_USR);
-console.log(SMTP_PWD);
 
 export const mailerModuleOptions: MailerOptions = {
    transport : { 

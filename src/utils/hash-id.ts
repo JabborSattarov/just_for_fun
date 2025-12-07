@@ -14,10 +14,6 @@ export class HashingId {
 
    decryptId(hash: string, secretKey: string) {
 
-      console.log(2);
-      console.log(hash);
-      
-      
       const [ivHex, encrypted] = hash.split(':');
       const iv = Buffer.from(ivHex, 'hex');
       const hashedKey = createHash('sha256').update(secretKey).digest();

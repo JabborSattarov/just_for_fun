@@ -1,6 +1,6 @@
 import { HashingId } from './../../utils/hash-id';
 
-import { Injectable } from "@nestjs/common";
+import { Get, Injectable, Param } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import mongoose, { Model } from "mongoose";
 import { BadRequestException, ConflictException } from "src/exceptions";
@@ -83,8 +83,6 @@ export class ClientService {
          password: password,
 
       }
-
-      console.log("data", loginData)
       await this.sendMail.sendLoginMail(loginData)
 
 
@@ -119,8 +117,8 @@ export class ClientService {
    }
 
    async getOne(param: ClientDeleteRequestInterface, req: CustomeRequestInterface): Promise<ClientCreateResponse> {
-      console.log(param);
-
+      console.log("keldi !");
+      
       if (!param && !param.id) {
          throw new BadRequestException("", "id is required !");
       }
@@ -129,7 +127,6 @@ export class ClientService {
       }
 
       const founded = await this.clientSchema.findOne({ _id: param.id, status: true }).lean();
-      console.log("founded",founded);
       
       let foundedClient: object = {};
       for (const key in founded) {         
@@ -150,5 +147,40 @@ export class ClientService {
          data: foundedClient,
          ...tokens
       }
+   }
+
+   async getAll( req: CustomeRequestInterface):Promise<ClientCreateResponse>{
+      
+      let founded: Array<object>;
+      let foundedClient: Array<object> = [];
+
+      if (req.decode.role == "admin") {
+         founded = await this.clientSchema.find({role: {$in:["manager", "user"]}, status: true}).lean();
+      }
+      if (req.decode.role == "manager") {
+         founded = await this.clientSchema.find({ role: { $in: ["user"] }, status: true}).lean();
+      }
+      
+      for (const client of founded) {
+         let redyClient = {}
+         for (const key in client) {
+            if (["_id", "user_firstname", "user_lastname", "user_email", "user_phone"].includes(key)) {
+               redyClient[key] = client[key];
+            }
+         }
+         foundedClient.push(redyClient)
+      }
+
+      console.log("Redy clinet",foundedClient);
+      
+
+      const SECERT_KEY = process.env.AES_SECRET_KEY
+      const tokens = await this.generateToken.signPayload({ id: req.decode.id, role: req.decode.role }, SECERT_KEY)
+      return {
+         status: 200,
+         message: "OK",
+         data: foundedClient,
+         ...tokens
+      } 
    }
 }
