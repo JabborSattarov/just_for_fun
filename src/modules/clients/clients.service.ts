@@ -1,6 +1,4 @@
-import { HashingId } from './../../utils/hash-id';
-
-import { Get, Injectable, Param } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import mongoose, { Model } from "mongoose";
 import { BadRequestException, ConflictException } from "src/exceptions";
@@ -118,7 +116,7 @@ export class ClientService {
 
    async getOne(param: ClientDeleteRequestInterface, req: CustomeRequestInterface): Promise<ClientCreateResponse> {
       console.log("keldi !");
-      
+
       if (!param && !param.id) {
          throw new BadRequestException("", "id is required !");
       }
@@ -127,10 +125,10 @@ export class ClientService {
       }
 
       const founded = await this.clientSchema.findOne({ _id: param.id, status: true }).lean();
-      
+
       let foundedClient: object = {};
-      for (const key in founded) {         
-         if (["_id" ,"user_firstname" ,"user_lastname", "user_email", "user_phone"].includes(key)) {
+      for (const key in founded) {
+         if (["_id", "user_firstname", "user_lastname", "user_email", "user_phone"].includes(key)) {
             foundedClient[key] = founded[key];
          }
 
@@ -149,18 +147,18 @@ export class ClientService {
       }
    }
 
-   async getAll( req: CustomeRequestInterface):Promise<ClientCreateResponse>{
-      
+   async getAll(req: CustomeRequestInterface): Promise<ClientCreateResponse> {
+
       let founded: Array<object>;
       let foundedClient: Array<object> = [];
 
       if (req.decode.role == "admin") {
-         founded = await this.clientSchema.find({role: {$in:["manager", "user"]}, status: true}).lean();
+         founded = await this.clientSchema.find({ role: { $in: ["manager", "user"] }, status: true }).lean();
       }
       if (req.decode.role == "manager") {
-         founded = await this.clientSchema.find({ role: { $in: ["user"] }, status: true}).lean();
+         founded = await this.clientSchema.find({ role: { $in: ["user"] }, status: true }).lean();
       }
-      
+
       for (const client of founded) {
          let redyClient = {}
          for (const key in client) {
@@ -171,8 +169,8 @@ export class ClientService {
          foundedClient.push(redyClient)
       }
 
-      console.log("Redy clinet",foundedClient);
-      
+      console.log("Redy clinet", foundedClient);
+
 
       const SECERT_KEY = process.env.AES_SECRET_KEY
       const tokens = await this.generateToken.signPayload({ id: req.decode.id, role: req.decode.role }, SECERT_KEY)
@@ -181,6 +179,6 @@ export class ClientService {
          message: "OK",
          data: foundedClient,
          ...tokens
-      } 
+      }
    }
 }

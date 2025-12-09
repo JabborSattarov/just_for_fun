@@ -25,9 +25,3 @@ export class ClientCreateDto implements ClientCreateRequest {
    @IsEnum(clientRole)
    role: string;
 }
-
-export class ClientDeleteDto implements  ClientDeleteRequestInterface{
-   @IsString()
-   @IsNotEmpty()
-   id: string
-}
