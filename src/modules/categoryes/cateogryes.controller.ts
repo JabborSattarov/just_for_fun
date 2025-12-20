@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards } from "@nestjs/common";
 import { CategoryService } from "./categoryes.service";
-import { CustomeRequestInterface } from "src/interfaces";
+import { CreateCategoryResponseInterface, CustomeRequestInterface } from "src/interfaces";
 import { CreateCategoryDto, deleteCategoryDto } from "./dto";
 import { CheckTokenGuard } from "src/guards/check-token.guard";
 import { CheckRoleGuard } from "src/guards/check-role.guard";
@@ -19,7 +19,7 @@ export class CategoryController {
    )
    @Roles("admin")
    @Post("create")
-   createCategory (@Body() body: CreateCategoryDto , @Req() req: CustomeRequestInterface) {
+   createCategory (@Body() body: CreateCategoryDto , @Req() req: CustomeRequestInterface): Promise<CreateCategoryResponseInterface> {
       return this.#_service.createCategory(body, req)
    }
 
@@ -29,7 +29,7 @@ export class CategoryController {
    )
    @Roles("admin")
    @Delete("delete/:id")
-   deleteCategory(@Param() param: deleteCategoryDto, @Req() req: CustomeRequestInterface) {
+   deleteCategory(@Param() param: deleteCategoryDto, @Req() req: CustomeRequestInterface): Promise<CreateCategoryResponseInterface> {
       return this.#_service.deleteCategory(param, req)
    }
 
@@ -39,7 +39,17 @@ export class CategoryController {
    )
    @Roles("admin", "manager", "user")
    @Get("/all")
-   getAll(@Req() req: CustomeRequestInterface) {
+   getAll(@Req() req: CustomeRequestInterface): Promise<CreateCategoryResponseInterface> {
       return this.#_service.getAllCategory(req)
+   }
+
+   @UseGuards(
+      CheckTokenGuard,
+      CheckRoleGuard
+   )
+   @Roles("admin", "manager", "user")
+   @Get("get/:id")
+   getOne( @Param() param: deleteCategoryDto, @Req() req: CustomeRequestInterface): Promise<CreateCategoryResponseInterface>  {
+      return this.#_service.getOneCategory(param , req)
    }
 }
