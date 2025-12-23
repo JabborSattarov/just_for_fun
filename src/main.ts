@@ -22,6 +22,11 @@ async function bootstrap() {
     },
   }))
 
+  app.enableCors({
+    origin: '*',
+    credentials: true
+  });
+
   const config = app.get(ConfigService)
   const host = config.getOrThrow("app.host");
   const port = config.getOrThrow("app.port")

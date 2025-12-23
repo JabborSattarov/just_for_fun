@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, UnauthorizedException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import mongoose, { Model } from "mongoose";
-import { BadRequestException } from "src/exceptions";
+import { BadRequestException, ConflictException,  } from "src/exceptions";
 import { CustomeRequestInterface } from "src/interfaces/token.interface";
 import { Client } from "src/schemas/clients.schemas";
 import { tokenSignPayloadType } from "src/types";
@@ -24,6 +24,9 @@ export class CheckTokenGuard implements CanActivate {
 
       const access_token = request.headers["a_token"];
       const hash = request.headers["hash"];
+
+     console.log(access_token)
+     console.log(hash)
       
       if (!access_token || !hash) {
          throw new BadRequestException("", "access_token and hash required");

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { CreateSubCategoryInterface, CreateSubCategoryResponseInterface, CustomeRequestInterface } from "src/interfaces";
+import { CreateSubCategoryInterface, CreateSubCategoryResponseInterface, CustomeRequestInterface, DeleteSubCategoryInterface } from "src/interfaces";
 import { SubCategory } from "src/schemas/sub-category.schema";
 import { GenerateToken } from "src/utils";
 
@@ -12,9 +12,9 @@ export class SubCategoryService {
       private readonly generateToken: GenerateToken
    ){}
    
-   async createSubCategory(body: CreateSubCategoryInterface, req: CustomeRequestInterface): Promise<CreateSubCategoryResponseInterface> {
+   async createSubCategory(param: DeleteSubCategoryInterface ,body: CreateSubCategoryInterface, req: CustomeRequestInterface): Promise<CreateSubCategoryResponseInterface> {
       
-      await this.subcategorySchema.create(body)
+      await this.subcategorySchema.create({category_id: param.id ,...body})
       const SECERT_KEY = process.env.AES_SECRET_KEY
       const tokens = await this.generateToken.signPayload({ id: req.decode.id, role: req.decode.role }, SECERT_KEY)
 

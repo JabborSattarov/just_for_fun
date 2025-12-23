@@ -1,9 +1,8 @@
-import { Injectable } from "@nestjs/common";
+
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Client } from "src/schemas/clients.schemas";
 
-@Injectable()
 export class GenerateLoginPassword {
    constructor(@InjectModel(Client.name) private readonly clientSchema: Model<Client>) { }
 

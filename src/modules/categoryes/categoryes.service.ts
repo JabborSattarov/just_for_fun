@@ -68,7 +68,7 @@ export class CategoryService {
       if (!mongoose.isValidObjectId(param.id)) {
          throw new BadRequestException("", "id must be objectId !");
       }
-      const category = await this.CategorySchema.findOne({ _id: new mongoose.Types.ObjectId(param.id), status: true }).populate("sub_categoryes").lean();
+      const category = await this.CategorySchema.findOne({ _id: new mongoose.Types.ObjectId(param.id), status: true })
       const SECERT_KEY = process.env.AES_SECRET_KEY
       const tokens = await this.generateToken.signPayload({ id: req.decode.id, role: req.decode.role }, SECERT_KEY)
 

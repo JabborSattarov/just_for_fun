@@ -5,7 +5,7 @@ import { CreateSubCategoryInterface, DeleteSubCategoryInterface } from "src/inte
 export class CreateSubCategoryDto implements CreateSubCategoryInterface {
    @IsString()
    @IsNotEmpty()
-   category_name: string;
+   subcategory_name: string;
 }
 
 export class deleteSubCategoryDto implements DeleteSubCategoryInterface {

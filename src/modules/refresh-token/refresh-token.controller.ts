@@ -8,7 +8,6 @@ export class RefreshTokenController {
    constructor(private readonly refresh_service: RefershTokenService) {}
    @Post("/refresh")
    async refresh (@Req() req: CustomeRequestInterface): Promise<loginResponseInterface> {
-      
       return this.refresh_service.refresh(req)
    }
 }

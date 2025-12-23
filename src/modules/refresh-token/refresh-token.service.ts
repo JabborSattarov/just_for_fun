@@ -20,7 +20,8 @@ export class RefershTokenService {
    ) { }
 
    async refresh(req: CustomeRequestInterface): Promise<loginResponseInterface> {
-
+      console.log("refreshka _keldi");
+      
       const refresh_token = req.headers["r_token"]
       const hash = req.headers["hash"]
 
@@ -48,7 +49,7 @@ export class RefershTokenService {
       const SECERT_KEY = process.env.AES_SECRET_KEY
       const tokens = await this.generateToken.signPayload({ id: findUser.id, role: findUser.role }, SECERT_KEY, false)
       const response: loginResponseInterface = {
-         status:200,
+         status: 200,
          message: "ok",
          ...tokens
       }

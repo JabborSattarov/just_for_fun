@@ -115,7 +115,7 @@ export class ClientService {
    }
 
    async getOne(param: ClientDeleteRequestInterface, req: CustomeRequestInterface): Promise<ClientCreateResponse> {
-      console.log("keldi !");
+      console.log("keldi get onega !");
 
       if (!param && !param.id) {
          throw new BadRequestException("", "id is required !");

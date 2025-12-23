@@ -5,6 +5,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { Category, CategorySchema } from "src/schemas/category.schemas";
 import { GenerateLoginPassword, GenerateToken, OneTimeCode } from "src/utils";
 import { Client, ClientSchema } from "src/schemas/clients.schemas";
+import { ClientModule } from "../clients/clients.module";
 
 @Module({
    imports: [
@@ -19,7 +20,8 @@ import { Client, ClientSchema } from "src/schemas/clients.schemas";
    providers: [
       CategoryService,
       OneTimeCode,
-      GenerateToken
+      GenerateToken,
+      ClientModule
    ]
 })
 export class CategoryModule { }

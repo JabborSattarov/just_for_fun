@@ -9,6 +9,7 @@ export interface loginResponseInterface {
    status: number,
    access_token: string,
    refresh_token?: string,
+   id?: string,
    hash: string
 }
 

@@ -1,7 +1,6 @@
 import { MailerService } from "@nestjs-modules/mailer";
-import { Injectable } from "@nestjs/common";
 import { SendCodeType, SendLoginPasswordType } from "src/types";
-@Injectable()
+
 export class SendMail {
    readonly #_mailerService: MailerService
    constructor(mailerService: MailerService) {

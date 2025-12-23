@@ -4,18 +4,23 @@ import { SubCategoryService } from "./sub-caterogory.service";
 import { MongooseModule } from "@nestjs/mongoose";
 import { SubCategory, SubCategorySchema } from "src/schemas/sub-category.schema";
 import { Category, CategorySchema } from "src/schemas/category.schemas";
+import { GenerateToken, OneTimeCode } from "src/utils";
+import { Client, ClientSchema } from "src/schemas/clients.schemas";
+import { ClientModule } from "../clients/clients.module";
 
 @Module({
-   imports:[
+   imports: [
       MongooseModule.forFeature([
+         { name: Client.name, schema: ClientSchema },
          { name: SubCategory.name, schema: SubCategorySchema },
-         { name: Category.name, schema: CategorySchema },
-      ])
+      ]),
    ],
-   controllers:[SubCategoryController],
-   providers:[
-      SubCategoryService
+   controllers: [SubCategoryController],
+   providers: [
+      SubCategoryService,
+      GenerateToken,
+      OneTimeCode
    ],
-   exports:[]
+   exports: []
 })
-export class SubCategoryModule {}
+export class SubCategoryModule { }
