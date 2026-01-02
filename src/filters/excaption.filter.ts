@@ -10,7 +10,7 @@ export class GlobalExeptionFilter implements ExceptionFilter {
       const express: HttpArgumentsHost = host.switchToHttp()
       const response: Response = express.getResponse<Response>()
       
-      
+      console.log("from exaption",exception)
       if (exception instanceof Exception) {
 
          const status:HttpStatus = exception.getStatus();

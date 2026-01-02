@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { GlobalExeptionFilter } from './filters';
 import { ValidationPipe } from '@nestjs/common';
 import { BadRequestException } from './exceptions';
+import { formatErrors } from './utils/error.formater';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -11,14 +12,12 @@ async function bootstrap() {
   app.useGlobalFilters(new GlobalExeptionFilter())
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
+    whitelist: true,
+    forbidNonWhitelisted: true,
     exceptionFactory: (errors) => {
-      const formattedErrors = errors.map(err => ({
-        field: err.property,
-        errors: Object.values(err.constraints),
-      }));
       return new BadRequestException({
-        errors: formattedErrors,
-      }, "Bad Request");
+        errors: formatErrors(errors),
+      });
     },
   }))
 

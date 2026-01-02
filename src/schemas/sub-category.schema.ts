@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose, { Document } from "mongoose";
-import { Item } from "./items.schemas";
 import { Category } from "./category.schemas";
 
 
@@ -25,7 +24,7 @@ export class SubCategory extends Document {
    @Prop({
       type: mongoose.Types.ObjectId,
       required: true,
-
+      
    })
    category_id: Category
 }

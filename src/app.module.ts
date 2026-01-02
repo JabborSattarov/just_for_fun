@@ -11,9 +11,10 @@ import { mailerModuleOptions } from './config/mailer/mailer.config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { SendMail } from './utils';
 import { RefershTokenModule } from './modules/refresh-token/refresh-token.module';
-import { ItemsModule } from './modules/items/item.module';
 import { CategoryModule } from './modules/categoryes/categoryes.module';
 import { SubCategoryModule } from './modules/sub-categoryes/sub-category.module';
+import { ProductModule } from './modules/products/product.module';
+import { ContractModule } from './modules/contracts/contract.module';
 
 const dbURL = process.env.DB_URL || "mongodb://127.0.0.1:27017/warehouse";
 
@@ -33,10 +34,11 @@ const dbURL = process.env.DB_URL || "mongodb://127.0.0.1:27017/warehouse";
     MailerModule.forRoot(mailerModuleOptions),
     AuthModule,
     ClientModule,
-    // ItemsModule,
+    ProductModule,
     RefershTokenModule,
     CategoryModule,
-    SubCategoryModule
+    SubCategoryModule,
+    ContractModule
   ],
   controllers: [],
   providers: [AdminSeederService, SendMail],
