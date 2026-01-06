@@ -1,1 +1,1 @@
-export * from "./contract.pipe";
+export * from "./product.pipe"

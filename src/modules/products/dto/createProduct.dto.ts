@@ -1,52 +1,8 @@
 import { Type } from "class-transformer";
-import { IsEnum, IsNotEmpty, IsObject, IsOptional, IsString, ValidateNested } from "class-validator";
+import { ArrayNotEmpty, IsArray, IsDefined, IsEnum, IsNotEmpty, IsObject, IsOptional, IsString, ValidateIf, ValidateNested } from "class-validator";
 import { ProductTypeEnum } from "src/enums";
-import { CreateProductInterface, ProductBehavioursInterface } from "src/interfaces";
-
-export class ProductBehaviourDto implements ProductBehavioursInterface {
-   @IsString()
-   @IsNotEmpty()
-   product_model: string;
-   
-   @IsString()
-   @IsNotEmpty()
-   product_size: string;
-   
-   @IsString()
-   @IsNotEmpty()
-   product_with: string;
-   
-   @IsString()
-   @IsNotEmpty()
-   product_height: string;
-   
-   @IsString()
-   @IsNotEmpty()
-   product_weight: string;
-   
-   @IsString()
-   @IsNotEmpty()
-   product_manufacture_date: string;
-   
-   @IsString()
-   @IsNotEmpty()
-   product_expiration_date: string;
-   
-   @IsString()
-   @IsNotEmpty()
-   
-   @IsString()
-   @IsNotEmpty()
-   product_made_in: string;
-   
-   @IsString()
-   @IsNotEmpty() 
-   product_color: string;
-   
-   @IsString()
-   @IsNotEmpty() 
-   product_count: string
-}
+import { CreateProductInterface } from "src/interfaces";
+import { CreateChildProductDto } from "./createChildProduct.dto";
 
 export class CreateProductDto implements CreateProductInterface {
    @IsString()
@@ -56,9 +12,61 @@ export class CreateProductDto implements CreateProductInterface {
    @IsEnum(ProductTypeEnum)
    @IsNotEmpty()
    product_type: ProductTypeEnum;
-   
-   @IsObject()
-   @IsNotEmpty()
-   product_behaviours: ProductBehaviourDto;
 
+   @IsString()
+   @IsDefined()
+   product_brand: string;
+
+   @IsString()
+   @IsDefined()
+
+   product_size: string;
+
+   @IsString()
+   @IsDefined()
+
+   product_with: string;
+
+   @IsString()
+   @IsDefined()
+
+   product_height: string;
+
+   @IsString()
+   @IsDefined()
+
+   product_weight: string;
+
+   @IsString()
+   @ValidateIf(body => body.product_type === ProductTypeEnum.EXPIRABLE)
+   @IsNotEmpty()
+   product_manufacture: string;
+
+   @IsString()
+   @ValidateIf(body => body.product_type === ProductTypeEnum.EXPIRABLE)
+   @IsNotEmpty()
+   product_expiration: string;
+
+   @IsString()
+   @IsDefined()
+
+   product_made_in: string;
+
+   @IsString()
+   @IsDefined()
+
+   product_color: string;
+
+   @IsString()
+   @IsDefined()
+
+   product_description: string;
+
+   @IsArray()
+   @ValidateIf(body => body.product_type === ProductTypeEnum.VARIANT)
+   @ArrayNotEmpty()
+   @ValidateNested({each: true})
+   @Type(() => CreateChildProductDto)
+   product_child?: CreateChildProductDto[];
 }
+

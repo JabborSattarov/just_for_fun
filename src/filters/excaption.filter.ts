@@ -17,7 +17,9 @@ export class GlobalExeptionFilter implements ExceptionFilter {
 
          if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
             return response.status(status).json({
+               status,
                message: exception.getMessage(),
+               details: exception.getDetails()
             })
          }
          return response.status(status).json({

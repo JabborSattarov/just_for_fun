@@ -6,12 +6,11 @@ import { Client } from 'src/schemas/clients.schemas';
 import { tokenSignPayloadType, tokenVerifyPayloadType } from "src/types"
 import { HashingId } from './hash-id';
 import { UnauthorizedException } from 'src/exceptions/unauthorized.exaption';
-
-
+import { InternalServerErrorException } from 'src/exceptions/internal-server-error.exceptoin';
 
 export class GenerateToken {
    constructor(
-       @InjectModel(Client.name) private readonly clientSchema: Model<Client>
+      @InjectModel(Client.name) private readonly clientSchema: Model<Client>
    ) { }
 
    private base64urlEncode(token: Buffer): string {
@@ -23,11 +22,11 @@ export class GenerateToken {
 
    private createToken(payload: tokenSignPayloadType, secretKey: string) {
       const aesKey = Buffer.from(secretKey, "base64")
-      
+
       const iv = randomBytes(12);
       const cipher = createCipheriv("aes-256-gcm", aesKey, iv);
       const jsonPayload = JSON.stringify(payload)
-   
+
       let encripted = cipher.update(jsonPayload, "utf-8", "base64");
       encripted += cipher.final("base64");
       const authTag = cipher.getAuthTag();
@@ -41,37 +40,41 @@ export class GenerateToken {
       return this.base64urlEncode(cipherData);
    }
 
-   async signPayload (payload: tokenSignPayloadType, secretKey: string, refresh: boolean = false) {
-      
-      const { id } = payload;
-      const currentDate = new Date();
+   async signPayload(payload: tokenSignPayloadType, secretKey: string, refresh: boolean = false) {
+      try {
+         const { id } = payload;
+         const currentDate = new Date();
 
-      const accessTokenTime = new Date(Date.now() + 1 * 60 * 1000).toISOString();
-      const refreshTokenTime = new Date(currentDate.setMonth(currentDate.getMonth() + 1)).toISOString();
+         const accessTokenTime = new Date(Date.now() + 1 * 60 * 1000).toISOString();
+         const refreshTokenTime = new Date(currentDate.setMonth(currentDate.getMonth() + 1)).toISOString();
 
-      const foundedUser = await this.clientSchema.findOne({_id: new mongoose.Types.ObjectId(id), status: true});
+         const foundedUser = await this.clientSchema.findOne({ _id: new mongoose.Types.ObjectId(id), status: true });
 
-   
-      if (!foundedUser) {
-         throw new NotFoundException("", "User not found")
+
+         if (!foundedUser) {
+            throw new NotFoundException("", "User not found")
+         }
+         payload.expiryTime = accessTokenTime
+         const access_token = this.createToken(payload, foundedUser.secret_key_access);
+         let refresh_token = null;
+         if (refresh) {
+            payload.expiryTime = refreshTokenTime;
+            refresh_token = this.createToken(payload, foundedUser.secret_key_refresh)
+         }
+
+         foundedUser.token_given_time = currentDate
+         await foundedUser.save();
+
+         const hashId = new HashingId()
+         const hash = hashId.encryptId(foundedUser.id, secretKey);
+         return refresh ? { access_token, refresh_token, hash } : { access_token, hash }
+      } catch (error) {
+         throw new InternalServerErrorException(error, error.message);
+
       }
-      payload.expiryTime = accessTokenTime
-      const access_token = this.createToken(payload, foundedUser.secret_key_access);
-      let refresh_token = null;
-      if (refresh) {
-         payload.expiryTime = refreshTokenTime;
-         refresh_token =  this.createToken(payload, foundedUser.secret_key_refresh)
-      }
-
-      foundedUser.token_given_time = currentDate
-      await foundedUser.save();
-
-      const hashId = new HashingId()
-      const hash = hashId.encryptId(foundedUser.id, secretKey);
-      return refresh ? { access_token, refresh_token, hash } : {access_token, hash}
    }
 
-   verifyToken (token: tokenVerifyPayloadType, secretKey: string) {    
+   verifyToken(token: tokenVerifyPayloadType, secretKey: string) {
       try {
          const base64 = token
             .replace(/-/g, '+')
@@ -98,6 +101,6 @@ export class GenerateToken {
       } catch (error) {
          throw new UnauthorizedException(error.message, "invalid token !")
       }
-     
+
    }
 }
