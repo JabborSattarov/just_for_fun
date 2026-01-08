@@ -4,7 +4,7 @@ import { ProductTypeEnum } from "src/enums";
 import { CreateProductInterface } from "src/interfaces";
 import { CreateChildProductDto } from "./createChildProduct.dto";
 
-export class CreateProductDto implements CreateProductInterface {
+export class CreateProductDto {
    @IsString()
    @IsNotEmpty()
    product_name: string;
@@ -19,22 +19,18 @@ export class CreateProductDto implements CreateProductInterface {
 
    @IsString()
    @IsDefined()
-
    product_size: string;
 
    @IsString()
    @IsDefined()
-
    product_with: string;
 
    @IsString()
    @IsDefined()
-
    product_height: string;
 
    @IsString()
    @IsDefined()
-
    product_weight: string;
 
    @IsString()
@@ -49,17 +45,14 @@ export class CreateProductDto implements CreateProductInterface {
 
    @IsString()
    @IsDefined()
-
    product_made_in: string;
 
    @IsString()
    @IsDefined()
-
    product_color: string;
 
    @IsString()
    @IsDefined()
-
    product_description: string;
 
    @IsArray()

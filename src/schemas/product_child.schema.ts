@@ -16,64 +16,55 @@ export class ProductChild extends Document {
    product_brand: string
 
    @Prop({
-      type: String,
-
-
+      type: String
    })
    product_barcode: string
 
    @Prop({
-      type: String,
-
+      type: String
    })
    product_size: string
 
    @Prop({
-      type: String,
-
-
+      type: String
    })
    product_color: string
 
    @Prop({
-      type: String,
-
+      type: String
    })
    product_with: string
 
    @Prop({
-      type: String,
-
-
+      type: String
    })
    product_height: string
 
    @Prop({
-      type: String,
-
-
+      type: String
    })
    product_weight: string
 
    @Prop({
-      type: String,
-
+      type: String
    })
    product_manufacture: string
 
    @Prop({
-      type: String,
-
-
+      type: String
    })
    product_expiration: string
 
    @Prop({
-      type: String,
-
-
+      type: String
    })
    product_description: string
+
+   @Prop({
+      type: mongoose.Types.ObjectId,
+      required: true
+   })
+   parent_id: mongoose.Types.ObjectId
 
    @Prop({
       type: Boolean,
