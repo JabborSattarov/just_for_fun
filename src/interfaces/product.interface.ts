@@ -4,8 +4,9 @@ import { ProductTypeEnum } from "src/enums";
 
 export interface CreateProductInterface {
    product_name: string,
-   product_brand?: string,
-   product_type?: ProductTypeEnum,
+   product_brand: string,
+   product_type: ProductTypeEnum,
+   product_sku: string,
    product_size?: string,
    product_with?: string,
    product_height?: string,
@@ -15,10 +16,10 @@ export interface CreateProductInterface {
    product_made_in?: string,
    product_color?: string,
    product_description?: string,
-   product_child?: CreateChildProductInterface[]
+   product_child?: CreateProductInterface[]
+   parent_id?:string
 }
 export interface ResponseForCreateProductInterface {
-   id:string
    product_name: string,
    product_brand?: string,
    product_type?: string,
@@ -31,35 +32,7 @@ export interface ResponseForCreateProductInterface {
    product_made_in?: string,
    product_color?: string,
    product_description?: string,
-   product_child?: ResponseForCreateChildProductInterface[]
-}
-export interface CreateChildProductInterface {
-   product_name: string,
-   product_brand?: string,
-   product_size?: string,
-   product_with?: string,
-   product_height?: string,
-   product_weight?: string,
-   product_manufacture?: string,
-   product_expiration?: string,
-   product_made_in?: string,
-   product_color?: string,
-   product_description?: string,
-   parent_id: string
-}
-export interface ResponseForCreateChildProductInterface {
-   id:string
-   product_name: string,
-   product_brand?: string,
-   product_size?: string,
-   product_with?: string,
-   product_height?: string,
-   product_weight?: string,
-   product_manufacture?: string,
-   product_expiration?: string,
-   product_made_in?: string,
-   product_color?: string,
-   product_description?: string,   
+   product_child?: ResponseForCreateProductInterface[]
 }
 export interface ResponseInterface {
    status: number,

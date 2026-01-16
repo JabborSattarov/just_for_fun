@@ -1,6 +1,5 @@
 import { Exclude, Expose, Transform, Type } from "class-transformer";
 import { ResponseForCreateProductInterface, ResponseInterface } from "src/interfaces";
-import { ResponseForCreateChildProductDto } from "./responseChildProduct.dto";
 
 @Exclude()
 export class ResponseForCreateProductDto implements ResponseForCreateProductInterface {
@@ -56,8 +55,8 @@ export class ResponseForCreateProductDto implements ResponseForCreateProductInte
    product_description: string;
 
    @Expose()
-   @Type(() => ResponseForCreateChildProductDto)
-   product_child?: ResponseForCreateChildProductDto[];
+   @Type(() => ResponseForCreateProductDto)
+   product_child?: ResponseForCreateProductDto[];
 }
 export class ResponseProductDto implements ResponseInterface {
    @Expose()

@@ -1,8 +1,6 @@
 import { Type } from "class-transformer";
-import { ArrayNotEmpty, IsArray, IsDefined, IsEnum, IsNotEmpty, IsObject, IsOptional, IsString, ValidateIf, ValidateNested } from "class-validator";
+import { ArrayNotEmpty, IsArray, IsDefined, IsEnum, IsNotEmpty, IsObject, IsOptional, IsString, Matches, Max, MaxLength, Min, MinLength, ValidateIf, ValidateNested } from "class-validator";
 import { ProductTypeEnum } from "src/enums";
-import { CreateProductInterface } from "src/interfaces";
-import { CreateChildProductDto } from "./createChildProduct.dto";
 
 export class CreateProductDto {
    @IsString()
@@ -55,11 +53,17 @@ export class CreateProductDto {
    @IsDefined()
    product_description: string;
 
+   @IsString()
+   @IsNotEmpty()
+   @MaxLength(10)
+   @MinLength(2)
+   product_sku: string;
+
    @IsArray()
-   @ValidateIf(body => body.product_type === ProductTypeEnum.VARIANT)
+   @ValidateIf(body => body.product_type === ProductTypeEnum.VARIANT_PARENT)
    @ArrayNotEmpty()
    @ValidateNested({each: true})
-   @Type(() => CreateChildProductDto)
-   product_child?: CreateChildProductDto[];
+   @Type(() => CreateProductDto)
+   product_child?: CreateProductDto[];
 }
 

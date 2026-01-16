@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Matches } from "class-validator";
 import mongoose, { Document } from "mongoose";
 import { ProductTypeEnum } from "src/enums";
 
@@ -67,6 +68,18 @@ export class Product extends Document {
       required: true
    })
    product_type: string
+
+   @Prop({
+      type:String,
+      required: true,
+      unique: true
+   })
+   product_sku: string;
+
+   @Prop({
+      type: String,
+   })
+   parent_id?: string
 
    @Prop({
       type:Boolean,

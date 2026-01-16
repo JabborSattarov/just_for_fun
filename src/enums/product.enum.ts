@@ -4,5 +4,6 @@ export enum ProductTypeEnum {
    SIMPLE = "simple",
    EXPIRABLE = "expirable",
    LOT_TRACKED = "lot_tracked",
-   VARIANT = "variant"
+   VARIANT_PARENT = "variant_parent",
+   VARIANT_CHILD = "variant_child"
 }

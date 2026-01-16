@@ -2,9 +2,9 @@ import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards, UsePipes } 
 import { ClientService } from "./clients.service";
 import { ClientCreateDto, ClientDeleteDto } from "./dto";
 import { ClientCreateResponse, CustomeRequestInterface} from "src/interfaces";
-import { CheckTokenGuard } from "src/guards/check-token.guard";
-import { CheckRoleGuard } from "src/guards/check-role.guard";
+
 import { Roles } from "src/decorators";
+import { CheckRoleGuard, CheckTokenGuard } from "src/guards";
 
 
 @Controller("client")

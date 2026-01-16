@@ -12,17 +12,24 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { SendMail } from './utils';
 import { RefershTokenModule } from './modules/refresh-token/refresh-token.module';
 import { ProductModule } from './modules/products/product.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
-const dbURL = process.env.DB_URL || "mongodb://127.0.0.1:27017/warehouse";
-
+const dbURL = process.env.DB_URL || "mongodb://localhost:27017/warehouse?replicaSet=rs0";
+console.log(dbURL)
 @Module({
   imports: [
+    MongooseModule.forRoot(String(dbURL), {
+      retryAttempts: 1,
+      dbName: "warehouse",
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'doc'), 
+      serveRoot: '/doc',                      
+    }),
     ConfigModule.forRoot({
       load: [appConfig],
       isGlobal: true
-    }),
-    MongooseModule.forRoot(String(dbURL), {
-      dbName: "warehouse"
     }),
     MongooseModule.forFeature([
       {name: Client.name, schema: ClientSchema},

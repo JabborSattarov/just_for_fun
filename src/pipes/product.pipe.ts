@@ -1,6 +1,7 @@
 import { ArgumentMetadata, Injectable, PipeTransform } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
+import { ProductTypeEnum } from "src/enums";
 import { BadRequestException } from "src/exceptions";
 import { CreateProductDto } from "src/modules/products/dto/createProduct.dto";
 import { formatErrors } from "src/utils/error.formater";
@@ -11,7 +12,7 @@ export class ProductValidationPipe implements PipeTransform {
       if (metadata.type !== "body") {
          throw new BadRequestException("Validation Error", "this validation validate only body")
       }
-      if (value.product_type == "variant" && !Object.keys(value).includes("product_child")) {
+      if (value.product_type == ProductTypeEnum.VARIANT_PARENT && !Object.keys(value).includes("product_child")) {
          throw new BadRequestException({
             errors: [
                {
@@ -23,7 +24,7 @@ export class ProductValidationPipe implements PipeTransform {
             ],
          }, "Bad Request");
       }
-      if (value.product_type !== "variant" && Object.keys(value).includes("product_child")) {
+      if (value.product_type !== ProductTypeEnum.VARIANT_PARENT && Object.keys(value).includes("product_child")) {
          throw new BadRequestException({
             errors: [
                {
@@ -35,8 +36,9 @@ export class ProductValidationPipe implements PipeTransform {
             ],
          }, "Bad Request");
       }
-      const instanceDto = plainToInstance(CreateProductDto, value);
 
+
+      const instanceDto = plainToInstance(CreateProductDto, value);
 
       const errors = await validate(instanceDto, {
          whitelist: true,

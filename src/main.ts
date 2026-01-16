@@ -5,10 +5,10 @@ import { GlobalExeptionFilter } from './filters';
 import { ValidationPipe } from '@nestjs/common';
 import { BadRequestException } from './exceptions';
 import { formatErrors } from './utils/error.formater';
+import mongoose from 'mongoose';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
   app.useGlobalFilters(new GlobalExeptionFilter())
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
