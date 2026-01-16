@@ -24,10 +24,10 @@ export class ProductController {
         return this.service.getOneProduct(id, req)
     }
 
-    // @UseInterceptors(ClassSerializerInterceptor)
-    // @UseGuards(CheckTokenGuard)
-    // @Get("get_all")
-    // async getAllProduct(@Req() req: CustomeRequestInterface): Promise<ResponseInterface> {
-    //     return this.service.getAll(req)
-    // }
+    @UseInterceptors(ClassSerializerInterceptor)
+    @UseGuards(CheckTokenGuard)
+    @Get("get_all")
+    async getAllProduct(@Req() req: CustomeRequestInterface): Promise<ResponseInterface> {
+        return this.service.getAllProducts(req)
+    }
 }

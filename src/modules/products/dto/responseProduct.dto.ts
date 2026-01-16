@@ -4,6 +4,7 @@ import { ResponseForCreateProductInterface, ResponseInterface } from "src/interf
 @Exclude()
 export class ResponseForCreateProductDto implements ResponseForCreateProductInterface {
    @Expose()
+   @Transform(({ value }) => value?.trim() ? String(value) : undefined)
    id: string;
 
    @Expose()

@@ -20,6 +20,7 @@ export interface CreateProductInterface {
    parent_id?:string
 }
 export interface ResponseForCreateProductInterface {
+   id?:string,
    product_name: string,
    product_brand?: string,
    product_type?: string,

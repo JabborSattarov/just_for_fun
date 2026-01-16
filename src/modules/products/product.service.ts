@@ -9,6 +9,7 @@ import { GenerateToken } from "src/utils";
 import { ResponseForCreateProductDto, ResponseProductDto } from "./dto/responseProduct.dto";
 import { plainToInstance } from "class-transformer";
 import { BadRequestException } from "src/exceptions";
+import { chdir } from "process";
 
 @Injectable()
 export class ProductService {
@@ -84,28 +85,34 @@ export class ProductService {
 
       const findProducts = await this.ProductSchema.find({ $or: [{ _id: id }, { parent_id: id }], status: true }).lean();
       let returningData: ResponseForCreateProductInterface;
-      let childs: ResponseForCreateProductInterface[] = [];
+      let childs: ResponseForCreateProductInterface[]= [];
       for (let i = 0; i < findProducts.length; i++) {
          const product = findProducts[i];
          if (product.product_type == ProductTypeEnum.VARIANT_PARENT) {
-            console.log("if");
+            
+            
             
             returningData = {
+               id: String(product._id),
                ...product,
                product_child: []
             }
             for (let j = 0; j < findProducts.length; j++) {
                const child = findProducts[j];
                if (child.product_type == ProductTypeEnum.VARIANT_CHILD) {
+                  child.id = String(child._id)
                   childs.push(child)
                }
             }
             returningData.product_child = childs;
             break
          }else {
+            findProducts[0].id = String(findProducts[0]._id);
             returningData = findProducts[0];
          }
       }
+
+      console.log(returningData)
 
       const SECERT_KEY = process.env.AES_SECRET_KEY
       const tokens = await this.generateToken.signPayload({ id: req.decode.id, role: req.decode.role }, SECERT_KEY)
@@ -117,6 +124,47 @@ export class ProductService {
          // data: returningData,
          ...tokens
       })
+   }
+
+   async getAllProducts(req: CustomeRequestInterface) : Promise<ResponseInterface> {
+      const findProducts = await this.ProductSchema.find({ status: true }).lean();
+      let returningData: ResponseForCreateProductInterface;
+      let returningDataArray: ResponseForCreateProductInterface[] = [];
+      let childs: ResponseForCreateProductInterface[] = [];
+      for (let i = 0; i < findProducts.length; i++) {
+         const product = findProducts[i];
+         if (product.product_type == ProductTypeEnum.VARIANT_PARENT) {
+            console.log("if");
+
+            returningData = {
+               ...product,
+               product_child: []
+            }
+            for (let j = 0; j < findProducts.length; j++) {
+               const child = findProducts[j];
+               if (child.product_type == ProductTypeEnum.VARIANT_CHILD && child.parent_id == product.id) {
+                  childs.push(child)
+               }
+            }
+            returningData.product_child = childs;
+            returningDataArray.push(returningData)
+            break
+         } else {
+            returningDataArray = findProducts;
+         }
+      }
+
+      const SECERT_KEY = process.env.AES_SECRET_KEY
+      const tokens = await this.generateToken.signPayload({ id: req.decode.id, role: req.decode.role }, SECERT_KEY)
+      const productReturningDtos = plainToInstance(ResponseForCreateProductDto, returningDataArray)
+      return plainToInstance(ResponseProductDto, {
+         status: 200,
+         message: "ok",
+         data: productReturningDtos ? productReturningDtos : {},
+         // data: returningData,
+         ...tokens
+      })
+      return
    }
 
 }
