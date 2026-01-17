@@ -21,7 +21,7 @@ export class ProductService {
    ) { }
 
    async createNewProduct(body: CreateProductInterface, req: CustomeRequestInterface): Promise<ResponseInterface> {
-      const checkForUniqueSKU = await this.ProductSchema.findOne({product_sku: body.product_sku, status: true})
+      const checkForUniqueSKU = await this.ProductSchema.findOne({ product_sku: body.product_sku, status: true })
       if (checkForUniqueSKU) {
          throw new BadRequestException(body.product_sku, "Sku must be unique!")
       }
@@ -85,13 +85,13 @@ export class ProductService {
 
       const findProducts = await this.ProductSchema.find({ $or: [{ _id: id }, { parent_id: id }], status: true }).lean();
       let returningData: ResponseForCreateProductInterface;
-      let childs: ResponseForCreateProductInterface[]= [];
+      let childs: ResponseForCreateProductInterface[] = [];
       for (let i = 0; i < findProducts.length; i++) {
          const product = findProducts[i];
          if (product.product_type == ProductTypeEnum.VARIANT_PARENT) {
-            
-            
-            
+
+
+
             returningData = {
                id: String(product._id),
                ...product,
@@ -106,13 +106,11 @@ export class ProductService {
             }
             returningData.product_child = childs;
             break
-         }else {
+         } else {
             findProducts[0].id = String(findProducts[0]._id);
             returningData = findProducts[0];
          }
       }
-
-      console.log(returningData)
 
       const SECERT_KEY = process.env.AES_SECRET_KEY
       const tokens = await this.generateToken.signPayload({ id: req.decode.id, role: req.decode.role }, SECERT_KEY)
@@ -126,45 +124,50 @@ export class ProductService {
       })
    }
 
-   async getAllProducts(req: CustomeRequestInterface) : Promise<ResponseInterface> {
+   async getAllProducts(req: CustomeRequestInterface): Promise<ResponseInterface> {
+
       const findProducts = await this.ProductSchema.find({ status: true }).lean();
-      let returningData: ResponseForCreateProductInterface;
-      let returningDataArray: ResponseForCreateProductInterface[] = [];
-      let childs: ResponseForCreateProductInterface[] = [];
+      let allProducts:ResponseForCreateProductInterface[] = []
+      let parent:ResponseForCreateProductInterface;
+      let child:ResponseForCreateProductInterface[] = []
+   
       for (let i = 0; i < findProducts.length; i++) {
          const product = findProducts[i];
-         if (product.product_type == ProductTypeEnum.VARIANT_PARENT) {
-            console.log("if");
 
-            returningData = {
+         if (product.product_type == ProductTypeEnum.VARIANT_PARENT) {
+            parent = {
+               id: String(product._id),
                ...product,
-               product_child: []
+               product_child:[]
             }
             for (let j = 0; j < findProducts.length; j++) {
                const child = findProducts[j];
-               if (child.product_type == ProductTypeEnum.VARIANT_CHILD && child.parent_id == product.id) {
-                  childs.push(child)
+               if (child.parent_id == parent.id) {
+                  child.id = String(child._id);
+                  parent.product_child.push(child)
                }
             }
-            returningData.product_child = childs;
-            returningDataArray.push(returningData)
-            break
-         } else {
-            returningDataArray = findProducts;
+
+            allProducts.push(parent)
+         }else {
+           
+            if (product.product_type !== ProductTypeEnum.VARIANT_CHILD) {
+               product.id = String(product._id)
+               allProducts.push(product)
+            }
          }
+         
       }
 
+      const returningProduct = plainToInstance(ResponseForCreateProductDto, allProducts);
       const SECERT_KEY = process.env.AES_SECRET_KEY
       const tokens = await this.generateToken.signPayload({ id: req.decode.id, role: req.decode.role }, SECERT_KEY)
-      const productReturningDtos = plainToInstance(ResponseForCreateProductDto, returningDataArray)
+
       return plainToInstance(ResponseProductDto, {
          status: 200,
          message: "ok",
-         data: productReturningDtos ? productReturningDtos : {},
-         // data: returningData,
+         data: returningProduct ? returningProduct : {},
          ...tokens
       })
-      return
    }
-
-}
+}  
