@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectConnection, InjectModel } from "@nestjs/mongoose";
-import { Connection, Model } from "mongoose";
+import mongoose, { Connection, Model } from "mongoose";
 import { ProductTypeEnum } from "src/enums";
 import { InternalServerErrorException } from "src/exceptions/internal-server-error.exceptoin";
 import { CreateProductInterface, CustomeRequestInterface, ResponseForCreateProductInterface, ResponseInterface } from "src/interfaces";
@@ -82,7 +82,12 @@ export class ProductService {
    }
 
    async getOneProduct(id: string, req: CustomeRequestInterface): Promise<ResponseInterface> {
-
+      if (!id) {
+         throw new BadRequestException("", "id is required !");
+      }
+      if (!mongoose.isValidObjectId(id)) {
+         throw new BadRequestException("", "id must be objectId !");
+      }
       const findProducts = await this.ProductSchema.find({ $or: [{ _id: id }, { parent_id: id }], status: true }).lean();
       let returningData: ResponseForCreateProductInterface;
       let childs: ResponseForCreateProductInterface[] = [];

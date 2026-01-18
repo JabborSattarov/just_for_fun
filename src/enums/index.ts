@@ -1,5 +1,5 @@
 export * from "./http-status.enum"
 export * from "./http-message.enum"
 export * from "./role.enums"
-export * from "./trade-sale.enum"
 export * from "./product.enum"
+export * from "./sales.enum"
