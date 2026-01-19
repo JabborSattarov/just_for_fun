@@ -26,12 +26,12 @@ export class Sales extends Document {
 
    @Prop({
       required: true,
-      type: SalesTypeEnum
+      enum: SalesTypeEnum
    })
    sales_type: SalesTypeEnum
 
    @Prop({
-      type: SalesStatusEnum,
+      enum: SalesStatusEnum,
       default: SalesStatusEnum.DRAFT
    })
    sales_status: SalesStatusEnum

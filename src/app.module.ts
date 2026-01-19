@@ -15,6 +15,7 @@ import { ProductModule } from './modules/products/product.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { WarehouseModule } from './modules/warehouses/warehouse.module';
+import { SalesModule } from './modules/sales/sales.module';
 
 const dbURL = process.env.DB_URL || "mongodb://localhost:27017/warehouse?replicaSet=rs0";
 console.log(dbURL)
@@ -41,6 +42,7 @@ console.log(dbURL)
     ClientModule,
     ProductModule,
     WarehouseModule,
+    SalesModule,
     RefershTokenModule
   ],
   controllers: [],
