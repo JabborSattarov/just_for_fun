@@ -17,9 +17,27 @@ export class SalesController {
       return this.service.createSales(body, req)
    }
 
+   @Get("/get")
+   @UseGuards(CheckTokenGuard)
+   async getAllSales(@Req() req: CustomeRequestInterface): Promise<ResponseInterface> {
+      return this.service.getAllSales(req)
+   }
+
    @Get("/get/:id")
    @UseGuards(CheckTokenGuard)
    async getOneSales(@Param() id: string, @Req() req: CustomeRequestInterface): Promise<ResponseInterface> {
       return this.service.getOneSales(id, req)
+   }
+
+   @Get("/accept/:id")
+   @UseGuards(CheckTokenGuard)
+   async acceptSales(@Param() id: string, @Req() req: CustomeRequestInterface): Promise<ResponseInterface> {
+      return this.service.acceptSales(id, req)
+   }
+
+   @Get("/reject/:id")
+   @UseGuards(CheckTokenGuard)
+   async rejectSales(@Param() id: string, @Req() req: CustomeRequestInterface): Promise<ResponseInterface> {
+      return this.service.rejectSales(id, req)
    }
 }

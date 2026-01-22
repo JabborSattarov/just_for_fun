@@ -5,6 +5,7 @@ import { SalesStatusEnum, SalesTypeEnum } from "src/enums";
 export class ResponseSalesDto {
    @Expose()
    id: string
+   
    @Expose()
    warehouse_id: string;
    
